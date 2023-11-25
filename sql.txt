@@ -1,0 +1,36 @@
+
+WITH MaxBids AS (
+    SELECT
+        i.id AS item_id,
+        MAX(b.amount) AS max_bid_amount
+    FROM auction_item i
+    LEFT JOIN auction_bids b ON i.id = b.item_id
+    GROUP BY i.id
+)
+
+SELECT
+    i.id AS item_id,
+    i.name AS item_name,
+    i.basePrice AS item_base_price,
+    i.bidCount AS item_bid_count,
+    mb.max_bid_amount,
+    u.username AS bidder_username
+FROM auction_item i
+LEFT JOIN MaxBids mb ON i.id = mb.item_id
+LEFT JOIN auction_bids b ON i.id = b.item_id AND mb.max_bid_amount = b.amount
+LEFT JOIN authentication_users u ON b.user_id = u.id
+Where i.auction_id =     
+ORDER BY i.id;
+
+DELIMITER //
+CREATE TRIGGER update_bid_count_trigger
+AFTER INSERT ON auction_bids
+FOR EACH ROW
+BEGIN
+    -- Update bidCount in the Item table for the corresponding item
+    UPDATE auction_item
+    SET bidCount = bidCount + 1
+    WHERE id = NEW.item_id;
+END;
+//
+DELIMITER ;

@@ -19,7 +19,16 @@ from . import views
 
 urlpatterns = [
     path('hello/', views.hello),
-    path("create/auctions", views.create_auction),
+    path("create/", views.create_auction),
+    path("update/", views.update_auction),
+    path("all/", views.get_auctions),
+    path("summary/", views.get_auction_summary),
+    
+    path("create/item/", views.create_items),
+    path("update/item/", views.update_items),
+    path("get/items/auction", views.get_all_items_auction),
+
+    path("create/bid/", views.create_bid),
     # path('signup/', views.signUp),
     # path('login/', views.login),
 ]

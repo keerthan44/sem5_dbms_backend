@@ -5,6 +5,7 @@ from django.views.decorators.csrf import csrf_exempt
 from pickle import FALSE
 from django.forms.models import model_to_dict
 from django.db import connection
+from authentication.models import *
 
 
 # Create your views here.
@@ -95,13 +96,12 @@ def signUp(request):
             return JsonResponse({"status" : "User Already Exists"}, status=303)
 
 
-def authenicate_user(username, password):
-    cursor = connection.cursor()
-    query = f"Select * from authentication_users where username = '{username}' && password = '{password}'"
-    cursor.execute(query)
-    if cursor.fetchall():
-        return 1
-    return 0
+def authenticate_user(username, password):
+    try:
+        user = Users.objects.get(username=username, password=password)
+        return user
+    except:
+        return 0 
 
 def __dictfetchall(cursor): 
     "Returns all rows from a cursor as a dict" 
